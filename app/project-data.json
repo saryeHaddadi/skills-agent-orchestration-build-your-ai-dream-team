@@ -1,0 +1,28 @@
+{
+  "projects": [
+    {
+      "name": "Lighthouse Onboarding Refresh",
+      "owner": "Ari Chen",
+      "status": "Active",
+      "recentActivity": "Completed accessibility review notes and queued copy updates for the welcome tour.",
+      "priority": "High",
+      "summary": "Improves the first-week contributor path with clearer tasks, owners, and learning checkpoints."
+    },
+    {
+      "name": "Summit Metrics Sync",
+      "owner": "Nia Patel",
+      "status": "At risk",
+      "recentActivity": "Identified delayed analytics exports and scheduled a recovery plan with the data steward.",
+      "priority": "Medium",
+      "summary": "Aligns project health metrics across teams so maintainers can compare progress using consistent signals."
+    },
+    {
+      "name": "Harbor Release Notes",
+      "owner": "Mateo Rivera",
+      "status": "Blocked",
+      "recentActivity": "Waiting on final dependency inventory before drafting the release summary.",
+      "priority": "Low",
+      "summary": "Prepares contributor-friendly release notes for a fictional maintenance milestone."
+    }
+  ]
+}

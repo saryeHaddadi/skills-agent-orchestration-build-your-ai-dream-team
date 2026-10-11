@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Project Pulse</title>
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="preload" href="./project-data.json" as="fetch" type="application/json" crossorigin="anonymous">
+  </head>
+  <body>
+    <header class="site-header">
+      <p class="eyebrow">Contributor dashboard</p>
+      <h1>Project Pulse</h1>
+      <p class="intro">
+        A quick, data-driven view of project ownership, momentum, priority, and current status.
+      </p>
+    </header>
+
+    <main class="dashboard" aria-labelledby="dashboard-title">
+      <section class="dashboard-panel" aria-describedby="dashboard-description">
+        <div class="dashboard-heading">
+          <h2 id="dashboard-title">Current project pulse</h2>
+          <p id="dashboard-description">
+            Cards are loaded from project-data.json so contributors can update the dashboard without changing page markup.
+          </p>
+        </div>
+
+        <div id="dashboard-message" class="dashboard-message" role="status" aria-live="polite">
+          Loading project data…
+        </div>
+
+        <div id="project-grid" class="project-grid" aria-label="Project cards"></div>
+      </section>
+    </main>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var dataUrl = "./project-data.json";
+        var requiredFields = ["name", "owner", "status", "recentActivity", "priority", "summary"];
+        var statusModifiers = {
+          "active": "active",
+          "at risk": "at-risk",
+          "blocked": "blocked"
+        };
+        var priorityModifiers = {
+          "high": "high",
+          "medium": "medium",
+          "low": "low"
+        };
+
+        var grid = document.getElementById("project-grid");
+        var message = document.getElementById("dashboard-message");
+
+        function setMessage(text, type) {
+          message.textContent = text;
+          message.className = "dashboard-message";
+          if (type) {
+            message.classList.add("dashboard-message--" + type);
+          }
+        }
+
+        function clearProjects() {
+          while (grid.firstChild) {
+            grid.removeChild(grid.firstChild);
+          }
+        }
+
+        function normalizeModifier(value, allowedModifiers) {
+          var key = value.trim().toLowerCase();
+          return allowedModifiers[key] || "unknown";
+        }
+
+        function createTextElement(tagName, className, text) {
+          var element = document.createElement(tagName);
+          if (className) {
+            element.className = className;
+          }
+          element.textContent = text;
+          return element;
+        }
+
+        function createLabeledField(label, value, className) {
+          var wrapper = document.createElement("p");
+          wrapper.className = className || "project-field";
+
+          var labelElement = createTextElement("span", "project-field__label", label + ": ");
+          var valueElement = createTextElement("span", "project-field__value", value);
+
+          wrapper.appendChild(labelElement);
+          wrapper.appendChild(valueElement);
+          return wrapper;
+        }
+
+        function createBadge(label, value, baseClass, modifier) {
+          var wrapper = document.createElement("p");
+          wrapper.className = "project-field";
+
+          var labelElement = createTextElement("span", "project-field__label", label + ": ");
+          var badge = createTextElement("span", baseClass + " " + baseClass + "--" + modifier, value);
+
+          wrapper.appendChild(labelElement);
+          wrapper.appendChild(badge);
+          return wrapper;
+        }
+
+        function validateProject(project, index) {
+          if (!project || Object.prototype.toString.call(project) !== "[object Object]" || Array.isArray(project)) {
+            throw new Error("Project record " + (index + 1) + " must be an object.");
+          }
+
+          requiredFields.forEach(function (field) {
+            if (typeof project[field] !== "string" || project[field].trim() === "") {
+              throw new Error("Project record " + (index + 1) + " is missing a nonempty " + field + " field.");
+            }
+          });
+
+          return {
+            name: project.name.trim(),
+            owner: project.owner.trim(),
+            status: project.status.trim(),
+            recentActivity: project.recentActivity.trim(),
+            priority: project.priority.trim(),
+            summary: project.summary.trim()
+          };
+        }
+
+        function validateData(data) {
+          if (!data || Object.prototype.toString.call(data) !== "[object Object]" || Array.isArray(data)) {
+            throw new Error("Project data must be a JSON object.");
+          }
+
+          if (!Array.isArray(data.projects)) {
+            throw new Error("Project data must include a projects array.");
+          }
+
+          return data.projects.map(validateProject);
+        }
+
+        function renderProject(project) {
+          var article = document.createElement("article");
+          article.className = "project-card project-card--status-" + normalizeModifier(project.status, statusModifiers) +
+            " project-card--priority-" + normalizeModifier(project.priority, priorityModifiers);
+
+          var title = createTextElement("h3", "project-card__title", project.name);
+          var summary = createTextElement("p", "project-summary", project.summary);
+          var details = document.createElement("div");
+          details.className = "project-card__details";
+
+          details.appendChild(createLabeledField("Owner", project.owner, "project-field project-field--owner"));
+          details.appendChild(createBadge("Status", project.status, "status-badge", normalizeModifier(project.status, statusModifiers)));
+          details.appendChild(createLabeledField("Recent activity", project.recentActivity, "project-field project-field--activity"));
+          details.appendChild(createBadge("Priority", project.priority, "priority-badge", normalizeModifier(project.priority, priorityModifiers)));
+
+          article.appendChild(title);
+          article.appendChild(summary);
+          article.appendChild(details);
+          return article;
+        }
+
+        function renderProjects(projects) {
+          clearProjects();
+
+          if (projects.length === 0) {
+            setMessage("No projects are available yet. Add records to project-data.json to populate the dashboard.", "empty");
+            return;
+          }
+
+          var fragment = document.createDocumentFragment();
+          projects.forEach(function (project) {
+            fragment.appendChild(renderProject(project));
+          });
+          grid.appendChild(fragment);
+          setMessage("Showing " + projects.length + " project" + (projects.length === 1 ? "." : "s."), "success");
+        }
+
+        function showError(error) {
+          clearProjects();
+          setMessage("Unable to load Project Pulse data: " + error.message, "error");
+        }
+
+        fetch(dataUrl, { headers: { "Accept": "application/json" }, cache: "no-cache" })
+          .then(function (response) {
+            if (!response.ok) {
+              throw new Error("HTTP " + response.status + " while requesting " + dataUrl + ".");
+            }
+            return response.json();
+          })
+          .then(function (data) {
+            renderProjects(validateData(data));
+          })
+          .catch(function (error) {
+            showError(error instanceof Error ? error : new Error("An unknown data error occurred."));
+          });
+      }());
+    </script>
+  </body>
+</html>

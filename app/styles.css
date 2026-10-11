@@ -1,0 +1,371 @@
+:root {
+  color-scheme: light;
+  --ink: #17283e;
+  --muted: #506078;
+  --line: #dce3ec;
+  --accent: #354ac4;
+  --active: #176444;
+  --active-bg: #e9f6ef;
+  --risk: #78500b;
+  --risk-bg: #fff4d9;
+  --blocked: #a52b40;
+  --blocked-bg: #ffedf0;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--ink);
+  background: #f4f6fb;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 90% 0%, #e0e5ff 0%, transparent 48%),
+    radial-gradient(ellipse at 0% 35%, #e7f2ee 0%, transparent 42%),
+    #f4f6fb;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+.site-header,
+.dashboard {
+  width: min(100% - 2rem, 78rem);
+  margin-inline: auto;
+}
+
+.site-header {
+  padding-block: clamp(2.5rem, 6vw, 5rem) 2.25rem;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.75rem;
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 1.75rem;
+  height: 0.2rem;
+  flex-shrink: 0;
+  border-radius: 1rem;
+  background: currentColor;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  line-height: 1.08;
+  overflow-wrap: anywhere;
+}
+
+.intro {
+  max-width: 43rem;
+  margin-top: 1.1rem;
+  color: var(--muted);
+  font-size: clamp(1rem, 2vw, 1.15rem);
+}
+
+.dashboard {
+  padding-bottom: 4rem;
+}
+
+.dashboard-panel {
+  padding: clamp(1rem, 3vw, 2.25rem);
+  border: 1px solid #dce3ee;
+  border-radius: 1.75rem;
+  background: #ffffffb8;
+  box-shadow: 0 18px 60px -35px #26396755;
+}
+
+.dashboard-heading {
+  max-width: 48rem;
+}
+
+.dashboard-heading h2 {
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  line-height: 1.3;
+}
+
+.dashboard-heading p {
+  margin-top: 0.6rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.dashboard-message {
+  margin-block: 1.5rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid #cbd5ee;
+  border-inline-start: 4px solid var(--accent);
+  border-radius: 0.65rem;
+  background: #edf1ff;
+  color: #30417e;
+  font-size: 0.9rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.dashboard-message--success {
+  border-color: #b9ddca;
+  border-inline-start-color: var(--active);
+  background: var(--active-bg);
+  color: var(--active);
+}
+
+.dashboard-message--empty {
+  border-style: dashed;
+  border-inline-start-style: solid;
+  border-color: #b7c2d3;
+  background: #f5f7fb;
+  color: var(--muted);
+}
+
+.dashboard-message--error {
+  border-color: #edb8c2;
+  border-inline-start-color: var(--blocked);
+  background: var(--blocked-bg);
+  color: var(--blocked);
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+.project-card {
+  --card-accent: #738097;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: clamp(1.15rem, 2.5vw, 1.6rem);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--card-accent);
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 2px 5px #17283e05, 0 12px 28px -15px #17283e30;
+  overflow-wrap: anywhere;
+}
+
+.project-card--status-active {
+  --card-accent: var(--active);
+}
+
+.project-card--status-at-risk {
+  --card-accent: var(--risk);
+}
+
+.project-card--status-blocked {
+  --card-accent: var(--blocked);
+}
+
+.project-card__title {
+  font-size: 1.25rem;
+  font-weight: 750;
+  letter-spacing: -0.025em;
+  line-height: 1.35;
+}
+
+.project-summary {
+  margin-block: 0.8rem 1.5rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.project-card__details {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: auto;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--line);
+}
+
+.project-field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 0.65rem;
+  min-width: 0;
+  font-size: 0.9rem;
+}
+
+.project-field__label {
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+}
+
+.project-field__value {
+  min-width: 0;
+}
+
+.project-field--owner .project-field__value {
+  font-weight: 650;
+}
+
+.project-field--activity {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.status-badge,
+.priority-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: 100%;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid #c6cfdd;
+  border-radius: 999px;
+  background: #f1f4f8;
+  color: #43516a;
+  font-size: 0.75rem;
+  font-weight: 750;
+  line-height: 1.6;
+}
+
+/* Shape reinforces the visible status text without generating extra spoken labels. */
+.status-badge::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.status-badge--active {
+  border-color: #b9ddca;
+  background: var(--active-bg);
+  color: var(--active);
+}
+
+.status-badge--active::before {
+  background: currentColor;
+}
+
+.status-badge--at-risk {
+  border-color: #e3c985;
+  background: var(--risk-bg);
+  color: var(--risk);
+}
+
+.status-badge--at-risk::before {
+  border-radius: 0;
+  transform: rotate(45deg);
+}
+
+.status-badge--blocked {
+  border-color: #edb8c2;
+  background: var(--blocked-bg);
+  color: var(--blocked);
+}
+
+.status-badge--blocked::before {
+  border-radius: 1px;
+  background: currentColor;
+}
+
+.priority-badge {
+  border-radius: 0.35rem;
+}
+
+.priority-badge--high {
+  border: 2px solid #a54826;
+  background: #fff0e8;
+  color: #873516;
+}
+
+.priority-badge--medium {
+  border-color: #bcc5ec;
+  background: #eef0ff;
+  color: #424b91;
+}
+
+.priority-badge--low {
+  border-style: dashed;
+  background: #f1f4f8;
+  color: #43516a;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 0.1em;
+}
+
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+
+@media (min-width: 44rem) {
+  .site-header,
+  .dashboard {
+    width: min(100% - 4rem, 78rem);
+  }
+
+  .project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 70rem) {
+  .project-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .project-card,
+  .dashboard-panel,
+  .dashboard-message,
+  .status-badge,
+  .priority-badge {
+    border-color: CanvasText;
+    box-shadow: none;
+  }
+
+  :focus-visible {
+    outline-color: Highlight;
+  }
+}
